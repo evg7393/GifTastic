@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>President Buttons</title>
+  <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+  <style type="text/css">
+    button,
+    div,
+    form,
+    input {
+      margin: 3%;
+    }
+  </style>
+</head>
+
+<body>
+        <div class="container">
+           <h1>President Search</h1>
+
+ <!-- Rendered Buttons will get Dumped Here  -->
+          <div id="buttons-view"></div>
+            <form id="president-form">
+                  <label for="president-input">Add a President</label>
+                  <input type="text" id="president-input">
+                  <br>
+ <!-- Button triggers new president to be added -->
+                  <input id="add-president" type="submit" value="Submit">
+                </form>
+            
+  <!-- presidents will Get Dumped Here -->
+         <div id="presidents-view"></div>
+
+<!--when submit button clicked javascript will create a new button for the text-->
+<!-- It will then Add the name from the textbox to our array
+when the new button is clicked, new giphy will be generated -->
+     
+                
+
+  <button data-president="George W Bush">Bush</button>
+  <button data-president="President Obama">Obama</button>
+  <button data-president="John F Kennedy">JFK</button>
+  <button data-president="Thomas Jefferson">Jefferson</button>
+  <button data-president="Abraham Lincoln">Lincoln</button>
+  <button data-president="Russia">Trump</button>
+  <button data-president="Watergate">Nixon</button>
+
+
+  <div id="gifs-appear-here">
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    // Adding click event listen listener to all buttons
+    $("button").on("click", function() {
+      // Grabbing and storing the data-president property value from the button
+      var president = $(this).attr("data-president");
+
+      // Constructing a queryURL using the president name
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        president + "&api_key=LhvJDxMgKJ3oSmvHxWOFwstuBEjYHcKr";
+
+      // Performing an AJAX request with the queryURL
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      })
+        // After data comes back from the request
+        .then(function(response) {
+          console.log(queryURL);
+
+          console.log(response);
+          // storing the data from the AJAX request in the results variable
+          var results = response.data;
+
+          // Looping through each result item
+          for (var i = 0; i < results.length; i++) {
+
+            // Creating and storing a div tag
+            var presidentDiv = $("<div>");
+
+            // Creating a paragraph tag with the result item's rating
+            var p = $("<p>").text("Rating: " + results[i].rating);
+
+            // Creating and storing an image tag
+            var presidentImage = $("<img>");
+            // Setting the src attribute of the image to a property pulled off the result item
+            presidentImage.attr("src", results[i].images.fixed_height.url);
+
+            // Appending the paragraph and image tag to the presidentDiv
+            presidentDiv.append(p);
+            presidentDiv.append(presidentImage);
+
+            // Prependng the presidentDiv to the HTML page in the "#gifs-appear-here" div
+            $("#gifs-appear-here").prepend(presidentDiv);
+
+             // If the clicked image's state is still, update its src attribute to what its data-animate value is.
+      // Then, set the image's data-state to animate
+      // Else set src to the data-still value
+
+          }
+        });
+    });
+  </script>
+</body>
+
+</html>
